@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero">
+    <div class="container text-center animate-on-scroll">
+        <h1 class="hero-title">Predict Environmental Emissions</h1>
+        <p class="hero-subtitle">Advanced machine learning for accurate emission forecasting</p>
+        <a href="{{ url_for('predict') }}" class="btn btn-primary btn-lg">
+            <i class="fas fa-calculator me-2"></i>Try Predictor
+        </a>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="container mb-5">
+    <div class="row g-4">
+        <div class="col-md-4 animate-on-scroll delay-1">
+            <div class="card h-100">
+                <div class="card-body text-center p-4">
+                    <div class="icon-circle bg-primary text-white mb-3 mx-auto">
+                        <i class="fas fa-chart-line fa-2x"></i>
+                    </div>
+                    <h4 class="card-title">Advanced Analytics</h4>
+                    <p class="card-text">Utilizing cutting-edge machine learning algorithms for precise emission predictions.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 animate-on-scroll delay-1">
+            <div class="card h-100">
+                <div class="card-body text-center p-4">
+                    <div class="icon-circle bg-success text-white mb-3 mx-auto">
+                        <i class="fas fa-leaf fa-2x"></i>
+                    </div>
+                    <h4 class="card-title">Environmental Focus</h4>
+                    <p class="card-text">Designed to help organizations understand and reduce their environmental impact.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 animate-on-scroll delay-1">
+            <div class="card h-100">
+                <div class="card-body text-center p-4">
+                    <div class="icon-circle bg-accent text-white mb-3 mx-auto">
+                        <i class="fas fa-bolt fa-2x"></i>
+                    </div>
+                    <h4 class="card-title">Fast Results</h4>
+                    <p class="card-text">Get instant predictions without complicated setup or lengthy processes.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works -->
+<section class="container mb-5 pt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 text-center animate-on-scroll delay-2">
+            <h2 class="mb-4">How It Works</h2>
+            <div class="timeline">
+                <div class="timeline-step">
+                    <div class="timeline-icon">1</div>
+                    <h5>Enter Data</h5>
+                    <p>Provide key environmental and operational metrics</p>
+                </div>
+                <div class="timeline-step">
+                    <div class="timeline-icon">2</div>
+                    <h5>Analyze</h5>
+                    <p>Our AI processes your data with advanced algorithms</p>
+                </div>
+                <div class="timeline-step">
+                    <div class="timeline-icon">3</div>
+                    <h5>Get Results</h5>
+                    <p>Receive accurate emission predictions instantly</p>
+                </div>
+            </div>
+            <a href="{{ url_for('predict') }}" class="btn btn-primary mt-4">
+                <i class="fas fa-rocket me-2"></i>Get Started
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .icon-circle {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .timeline {
+        display: flex;
+        justify-content: space-between;
+        position: relative;
+        margin: 2rem 0;
+    }
+    
+    .timeline:before {
+        content: '';
+        position: absolute;
+        top: 30px;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(to right, var(--primary-color), var(--accent-color));
+        z-index: 1;
+    }
+    
+    .timeline-step {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        width: 30%;
+    }
+    
+    .timeline-icon {
+        width: 60px;
+        height: 60px;
+        background: white;
+        border: 3px solid var(--primary-color);
+        color: var(--primary-color);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 1.5rem;
+        margin: 0 auto 1rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+</style>
+{% endblock %}

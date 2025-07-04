@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}Prediction Results{% endblock %}
+
+{% block content %}
+<section class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card animate-on-scroll">
+                <div class="card-header text-center">
+                    <h3><i class="fas fa-chart-pie me-2"></i>Prediction Results</h3>
+                </div>
+                <div class="card-body text-center p-5">
+                    <div class="result-icon mb-4">
+                        <i class="fas fa-chart-line fa-4x text-primary"></i>
+                    </div>
+                    <h4 class="mb-3">Predicted Total Emission</h4>
+                    <div class="result-display animate-on-scroll delay-1 fs-2 fw-bold">
+                        {{ prediction }}
+                    </div>
+                    <p class="result-unit animate-on-scroll delay-2 mb-5">metric tons CO₂ equivalent</p>
+
+                    <!-- Improved Gauge -->
+                    <div class="gauge-container mx-auto my-4" style="width: 100%; max-width: 300px;">
+                        <div class="gauge-body">
+                            <div class="gauge-fill" style="transform: rotate({{ viz_data.gauge_angle/2 }}deg);"></div>
+                            <div class="gauge-cover">
+                                <span class="gauge-value">{{ emission_level }}</span>
+                                <div class="gauge-percentage">{{ "%.0f"|format(viz_data.percentage) }}%</div>
+                            </div>
+                        </div>
+                        <div class="gauge-labels d-flex justify-content-between mt-2">
+                            <span>0</span>
+                            <span>7,500</span>
+                            <span>15,000</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-5 animate-on-scroll delay-2">
+                        <a href="{{ url_for('predict') }}" class="btn btn-primary me-3">
+                            <i class="fas fa-redo me-2"></i>New Prediction
+                        </a>
+                        <a href="{{ url_for('home') }}" class="btn btn-outline-primary">
+                            <i class="fas fa-home me-2"></i>Return Home
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .result-icon {
+        width: 100px;
+        height: 100px;
+        background-color: rgba(67, 97, 238, 0.1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+    }
+
+    /* Gauge Styles */
+    .gauge-container {
+        position: relative;
+    }
+
+    .gauge-body {
+        width: 100%;
+        height: 0;
+        padding-bottom: 50%;
+        position: relative;
+        border-top-left-radius: 100% 200%;
+        border-top-right-radius: 100% 200%;
+        overflow: hidden;
+        background-color: #f5f5f5;
+    }
+
+    .gauge-fill {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, #4CAF50 0%, #FFC107 50%, #F44336 100%);
+        transform-origin: center top;
+        transition: transform 0.5s ease-out;
+    }
+
+    .gauge-cover {
+        width: 75%;
+        height: 150%;
+        background: white;
+        border-radius: 50%;
+        position: absolute;
+        top: 25%;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        box-shadow: 0 0 5px rgba(0,0,0,0.2) inset;
+    }
+
+    .gauge-value {
+        font-size: 1.2rem;
+        color: #333;
+    }
+
+    .gauge-percentage {
+        font-size: 0.9rem;
+        color: #666;
+    }
+
+    .gauge-labels span {
+        font-size: 0.8rem;
+        color: #666;
+    }
+</style>
+{% endblock %}

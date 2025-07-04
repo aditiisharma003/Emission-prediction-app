@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+
+{% block title %}Predict Emissions{% endblock %}
+
+{% block content %}
+<section class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow animate-on-scroll">
+                <div class="card-header bg-primary text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="mb-0"><i class="fas fa-chart-line me-2"></i>Emission Predictor</h3>
+                        <span class="badge bg-light text-primary">Model Accuracy:{{ "%.1f"|format(test_metrics['R²'] * 100)}}%</span>
+                    </div>
+                </div>
+                <div class="card-body p-4">
+                    {% if error %}
+                    <div class="alert alert-danger animate-on-scroll">
+                        <i class="fas fa-exclamation-circle me-2"></i>{{ error }}
+                    </div>
+                    {% endif %}
+
+                    <form method="POST" class="needs-validation" novalidate>
+                        <div class="row g-4">
+                            <!-- Time Period -->
+                            <div class="col-md-6 animate-on-scroll delay-1">
+                                <label for="Year" class="form-label">
+                                    <i class="fas fa-calendar-alt me-2"></i>Year
+                                    <small class="text-muted">(1990-2025)</small>
+                                </label>
+                                <input type="number" class="form-control" id="Year" name="Year" 
+                                       min="1990" max="2025" required>
+                                <div class="form-text">Enter the target year for prediction</div>
+                            </div>
+
+                            <!-- Fire-related Emissions -->
+                            <div class="col-12 mt-4">
+                                <h5><i class="fas fa-fire me-2"></i>Fire-related Emissions</h5>
+                            </div>
+                            
+                            <div class="col-md-6 animate-on-scroll delay-1">
+                                <label for="Savanna_fires" class="form-label">Savanna Fires (Mt CO2)</label>
+                                <input type="number" step="0.01" class="form-control" id="Savanna_fires" name="Savanna fires" required min="0">
+                                <div class="form-text">Annual emissions from savanna burning</div>
+                            </div>
+
+                            <div class="col-md-6 animate-on-scroll delay-1">
+                                <label for="Forest_fires" class="form-label">Forest Fires (Mt CO2)</label>
+                                <input type="number" step="0.01" class="form-control" id="Forest_fires" 
+                                       name="Forest fires" required min="0">
+                                <div class="form-text">Annual emissions from forest fires</div>
+                            </div>
+
+                            <!-- Agricultural Emissions -->
+                            <div class="col-12 mt-4">
+                                <h5><i class="fas fa-seedling me-2"></i>Agricultural Sources</h5>
+                            </div>
+
+                            <div class="col-md-6 animate-on-scroll delay-2">
+                                <label for="Crop_Residues" class="form-label">Crop Residues (Mt CO2)</label>
+                                <input type="number" step="0.01" class="form-control" id="Crop_Residues" 
+                                       name="Crop Residues" required min="0">
+                                <div class="form-text">Emissions from agricultural residue burning</div>
+                            </div>
+
+                            <div class="col-md-6 animate-on-scroll delay-2">
+                                <label for="Rice_Cultivation" class="form-label">Rice Cultivation (Mt CO2)</label>
+                                <input type="number" step="0.01" class="form-control" id="Rice_Cultivation" 
+                                       name="Rice Cultivation" required min="0">
+                                <div class="form-text">Emissions from rice farming practices</div>
+                            </div>
+
+                            <!-- Transportation -->
+                            <div class="col-12 mt-4">
+                                <h5><i class="fas fa-truck me-2"></i>Transportation</h5>
+                            </div>
+
+                            <div class="col-md-12 animate-on-scroll delay-3">
+                                <label for="Food_Transport" class="form-label">Food Transport (Mt CO2)</label>
+                                <input type="number" step="0.01" class="form-control" id="Food_Transport" 
+                                       name="Food Transport" required min="0">
+                                <div class="form-text">Emissions from food transportation activities</div>
+                            </div>
+
+                            <!-- Population Data -->
+                            <div class="col-12 mt-4">
+                                <h5><i class="fas fa-users me-2"></i>Population Distribution</h5>
+                            </div>
+
+                            <div class="col-md-6 animate-on-scroll delay-4">
+                                <label for="Rural_population" class="form-label">Rural Population</label>
+                                <input type="number" step="1" class="form-control" id="Rural_population" 
+                                       name="Rural population" required min="0">
+                                <div class="form-text">Number of people in rural areas</div>
+                            </div>
+
+                            <div class="col-md-6 animate-on-scroll delay-4">
+                                <label for="Urban_population" class="form-label">Urban Population</label>
+                                <input type="number" step="1" class="form-control" id="Urban_population" 
+                                       name="Urban population" required min="0">
+                                <div class="form-text">Number of people in urban areas</div>
+                            </div>
+
+                            <div class="col-12 mt-4 animate-on-scroll delay-5">
+                                <button type="submit" class="btn btn-primary w-100 py-3">
+                                    <i class="fas fa-calculator me-2"></i>Generate Prediction
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function() {
+    'use strict';
+    
+    // Form validation
+    const forms = document.querySelectorAll('.needs-validation');
+    Array.from(forms).forEach(form => {
+        form.addEventListener('submit', event => {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+        }, false);
+    });
+
+    // Add thousand separators to number inputs
+    const numberInputs = document.querySelectorAll('input[type="number"]');
+    numberInputs.forEach(input => {
+        input.addEventListener('blur', function(e) {
+            let val = this.value.replace(/,/g, '');
+            if (val && !isNaN(val)) {
+                this.value = Number(val).toLocaleString('en-US');
+            }});
+            input.addEventListener('focus', function(e) {
+            this.value = this.value.replace(/,/g, ''); 
+        });        
+</script>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.card {
+    border: none;
+    border-radius: 15px;
+}
+
+.card-header {
+    border-radius: 15px 15px 0 0 !important;
+    padding: 1.5rem;
+}
+
+.form-control {
+    padding: 0.75rem;
+    border-radius: 8px;
+}
+
+.form-text {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+h5 {
+    color: #2c3e50;
+    margin-bottom: 1rem;
+}
+
+.btn-primary {
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+</style>
+{% endblock %}
